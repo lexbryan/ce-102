@@ -8,6 +8,10 @@ var liquid_height = 0;
 var downstream_liquid_height = 0;
 var sliding_coefficient = 0;
 
+var e = 0;
+var Ss = 0;
+var Ig = 0;
+
 var is_uplift = false;
 var is_downstream = false;
 var is_overflowing = false;
@@ -179,6 +183,7 @@ function calculate(){
     var FS = RM/OM;
     var FSs = sliding_coefficient*Ry/P;
     var U = is_uplift ? get_U(): 0;
+    var U2 = is_downstream ? get_U2(): 0;
     var U2 = dam_case == 5 ? get_U2(): 0;
     var P2 = dam_case == 5 ? get_p2(): 0;
     
@@ -186,13 +191,17 @@ function calculate(){
     
     var solution = "<span>Case "+dam_case+":</span><br/><br/>"+
                    "<span>P = "+P.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" kN</span><br/>"+
+                    (P2>0 ? "<span>P2 = "+P2.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" kN</span><br/>" :"")+
                     "<span>RM = "+RM.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" kN.m</span><br/>"+
                     "<span>OM = "+OM.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" kN.m</span><br/>"+
                     "<span>Ry = "+Ry.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" kN</span><br/>"+
                     (is_uplift ? "<span>U = "+U.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" kN</span><br/>" : "") +
+                    (is_downstream ? "<span>U2 = "+U2.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"</span><br/>": "")+
                     ((dam_case == 2 || dam_case == 3) ? "<span>Ryx&#772; = "+Ryx_bar.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" kN.m</span><br/>" : "") +
                     "<span>Factor of safety = "+FS.toFixed(3)+"</span><br/>"+
-                    "<span>Factor of safety against sliding = "+FSs.toFixed(3)+"</span><br/>";
+                    "<span>Conclusion: "+(FS > 1 ? "Safe!" : "Not Safe!") +"</span><br/>"+
+                    "<span>Factor of safety against sliding = "+FSs.toFixed(3)+"</span><br/>"+
+                    "<span>Conclusion: "+ (FSs > 1 ? "Safe!" : "Not Safe!") +"</span>";
     
     $('#solution-container').html(solution);
     
@@ -205,8 +214,6 @@ function get_p(){
     
     if(liquid_height <= dam_height) area = liquid_height;
     else area = dam_height;
-    
-    
     
     if(is_overflowing){
         var h_bar = dam_height/2 + (liquid_height-dam_height);
@@ -256,7 +263,7 @@ function get_rm_w(){
         
         if(is_overflowing){
             w3 = 9.81*sg_liquid*dam_top_width*(liquid_height - dam_height); 
-            x3 = dam_top_width/2;
+            x3 = dam_top_width/2 + (dam_bottom_width - dam_top_width);
         }
         else if(is_downstream){
             p2 = get_p2();
@@ -276,19 +283,21 @@ function get_om(){
     if(liquid_height > dam_height) hc = liquid_height/2 + (1/12)*Math.pow(dam_height,3)/(liquid_height*0.5*dam_height);
     else hc = liquid_height*2/3;
     
-    var OM = get_p()*(liquid_height - hc);
+    var OM = 0;  
     
     if(is_uplift) OM += get_U()*2*dam_bottom_width/3;
-    else if(dam_case == 3){
-        var Ig = Math.pow(dam_height,3)/12;
+    
+    if(is_overflowing){
+        Ig = Math.pow(dam_height,3)/12;
         var h_bar = dam_height/2 + (liquid_height - dam_height);
-        var Ss = dam_height*h_bar;
-        var e = Ig/Ss; 
+        Ss = dam_height*h_bar;
+        e = Ig/Ss; 
             
         OM += get_p() * (dam_height/2 - e);
     }
+    else OM= get_p()*(liquid_height - hc);
     
-    if(is_downstream) OM += get_U2*dam_bottom_width/2;
+    if(is_downstream) OM += get_U2()*dam_bottom_width/2;
     
     return OM;
 }
@@ -297,7 +306,7 @@ function get_U(){
     
     
     var U = 9.81*sg_liquid*dam_bottom_width*liquid_height/2;
-    var U1 = 9.81*sg_liquid*dam_bottom_width*(liquid_height - downstream_liquid_height)/2
+    var U1 = 9.81*sg_liquid*dam_bottom_width*(liquid_height - downstream_liquid_height)/2;
         
     return is_downstream ? U1 : U;
 }
