@@ -1,0 +1,132 @@
+<html>
+    <!--
+        CE 102 PROJECT FOREVER
+    
+    -->
+    <head>
+        <title>CE 102</title>
+        <link rel="stylesheet" type="text/css" href="assets/main.css">
+        <script type="application/javascript" src="assets/jquery-1.12.0.min.js"></script>
+        <script type="application/javascript" src="assets/functions.js"></script>
+    </head>
+
+    <body onload="onload()">
+        <div class="main-container">
+            <div class="banner">
+            
+            </div>
+            <div class="content">
+                <div class="left-container">
+                    <h1>Dam</h1>
+                    
+                    <div id="cases-container">
+                        <h4>Scenario:</h4>
+                        <form id="form-cases" action="">
+                            <input type="checkbox" value="1" id="uplift" name="uplift" onchange="uplift_visibility()">
+                            <label for="uplift" id="_uplift"> Hydrostatic Uplift<br/></label>
+                            
+                            <input type="checkbox" value="1" id="overflowing" name="overflowing" onchange="sh('overflowing')">
+                            <label for="overflowing" id="_overflowing">Overflowing</label><label id="label_overflowing"><br/></label>
+                            
+                            <input type="checkbox" value="1" id="downstream_upstream" name="downstream_upstream"  onchange="sh('downstream_upstream')">
+                            <label for="downstream_upstream" id="_downstream_upstream">Downstream & Upstream</label><label id="label_downstream_upstream"><br/></label>
+                            <br/>
+                            <button type="button" id="submit" onclick="proceed()">Proceed</button>
+                        </form>
+                        
+                        <form id="form-values" action="" style="display: none">
+                            <table style="font-size:12px;">
+                                <tr>
+                                    <td>Specific Gravity of Liquid: </td>
+                                    <td><input type="text" value="1" id="liquid-sg"></td>
+                                </tr>
+                                <tr>
+                                    <td>Height of Dam: </td>
+                                    <td><input type="text" id="dam-height" value="0" onchange="change_liquid_height(); set_dam_ui();"> m</td>
+                                </tr>
+                                <tr>
+                                    <td>Height of Liquid: </td>
+                                    <td><input type="text" value="0" id="liquid-height" onchange="change_liquid_height()"> m</td>
+                                </tr>
+                                <tr id="downstream-liquid" style="display: none">
+                                    <td>Height of downstream liquid: </td>
+                                    <td><input type="text" value="0" id="downstream-height" /> m</td>
+                                </tr>
+                                <tr>
+                                    <td>Specific gravity of concrete: </td>
+                                    <td><input type="text" id="concrete-sg" value="2.4"></td>
+                                </tr>
+                                <tr>
+                                    <td>Top width of dam: </td>
+                                    <td><input type="text" id="dam-top-width" value="0" onchange="set_dam_ui()"> m</td>
+                                </tr>
+                                <tr>
+                                    <td>Bottom width of dam: </td>
+                                    <td><input type="text" id="dam-bottom-width" value="0" onchange="set_dam_ui()"> m</td>
+                                </tr>
+                                <tr>
+                                    <td>Sliding Coefficient: </td>
+                                    <td><input type="text" id="sliding-coefficient" value="0.2"></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button type="button" id="submit" onclick="calculate()">Calculate</button>&nbsp;
+                                        <button type="button" id="back" onclick="goto_home()">Back</button>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="right-container">
+                    <div id="water-top-container">
+                        <div id="water-spill"></div>
+                        <div id="top-resizer"></div>
+                    </div>
+                    <div id="water-left-container">
+                        <div id="water-resizer"></div>
+                        <div id="water-top"></div>
+                        <div id="water-bottom"></div>
+                        
+                        <div id="water-pressure">
+                            <div id="pressure-resizer"></div>
+                            <div id="pressure"></div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div id="concrete-right-container" ></div>
+                    <div id="water-downstream">
+                        <div id="" style="float:left; width:100%; height:20px; background-color:#80dbff;margin-top:30px;"></div>
+                    </div>
+                    
+                    <div id="soil"></div>
+                    <div id="uplift-pressure"></div>
+                
+                </div>
+                <div id="solution-container">
+                    
+                </div>                
+            </div>
+            
+            <div class="footer">
+                <p>Project Forever Team:</p>
+                
+                    <ul>
+                        <li>Arveyn Jay Caga</li>
+                        <li>Vicente de los Santos II</li>
+                        <li>Christopher Ian Pantonial</li>
+                        <li>Lester Monteroso</li>
+                        <li>Lex Bryan Bangot</li>
+                    </ul>
+                <br/><br/><br/>
+            </div>
+        </div>
+    </body>
+</html>
