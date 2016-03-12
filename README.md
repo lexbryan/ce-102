@@ -1,1 +1,3 @@
-# ce-102
+# CE 102
+
+A simple Hydraulics Engineering Calculator for dams.
